@@ -1,0 +1,282 @@
+<div class="dark-font bc-icons-2">
+  <mdb-breadcrumb customClass="black-text indigo lighten-4">
+    <mdb-breadcrumb-item class="active">
+      <mdb-icon class="mr-1"></mdb-icon>
+    </mdb-breadcrumb-item>
+  </mdb-breadcrumb>
+</div>
+
+<!--Double navigation-->
+<header class="view">
+
+  <!-- Sidebar navigation -->
+  <mdb-side-nav #sidenav [fixed]="false" class="primary-color-dark text-white ">
+    <links>
+      <!-- Side navigation links -->
+      <li>
+        <br>
+        <ul class="collapsible collapsible-accordion">
+          <mdb-accordion [multiple]="false" aria-multiselectable="false">
+
+            <mdb-accordion-item class="no-collase">
+              <mdb-accordion-item-head mdbWavesEffect>
+                <a [routerLink]="'/home'" mdbWavesEffect>
+                  <mdb-icon fas icon="angle-double-right"></mdb-icon>Home
+                </a>
+              </mdb-accordion-item-head>
+            </mdb-accordion-item>
+
+            <mdb-accordion-item>
+              <mdb-accordion-item-head mdbWavesEffect>
+                <mdb-icon fas icon="angle-double-right"></mdb-icon> Student
+              </mdb-accordion-item-head>
+              <mdb-accordion-item-body>
+                <ul>
+                  <li>
+                    <a [routerLink]="'/student'" mdbWavesEffect>
+                      <mdb-icon fas icon="angle-right"></mdb-icon>Add Student
+                    </a>
+                  </li>
+                  <li>
+                    <a [routerLink]="'/marks-student'" mdbWavesEffect>
+                      <mdb-icon fas icon="angle-right"></mdb-icon>Marks
+                    </a>
+                  </li>
+                  <li>
+                    <a [routerLink]="'/attendance-student'" mdbWavesEffect>
+                      <mdb-icon fas icon="angle-right"></mdb-icon>Attendance
+                    </a>
+                  </li>
+                </ul>
+              </mdb-accordion-item-body>
+            </mdb-accordion-item>
+          </mdb-accordion>
+        </ul>
+      </li>
+      <!--/. Side navigation links -->
+    </links>
+    <div class="sidenav-bg mask-strong"></div>
+  </mdb-side-nav>
+  <!--/. Sidebar navigation -->
+
+  <!-- Navbar -->
+  <mdb-navbar
+    SideClass="navbar primary-color fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav"
+    [containerInside]="false">
+    <navlinks class="navbar-container w-auto">
+      <!-- SideNav slide-out button -->
+      <div>
+        <a (click)="sidenav.show()" class="button-collapse hidden-nav-button-collapse mx-0">
+          <mdb-icon fas icon="bars"></mdb-icon>
+        </a>
+      </div>
+      <!--/. SideNav slide-out button -->
+    </navlinks>
+    <div class="w-auto">
+      <!-- Breadcrumb-->
+      <div class="breadcrumbs breadcrumbs-hidden-nav breadcrumb-dn clearfix">
+        <p><b><a [routerLink]="'/home'">ECommerce</a></b></p>
+      </div>
+      <!--/. Breadcrumb-->
+    </div>
+    <navlinks class="w-100">
+      <ul class="nav navbar-nav nav-flex-icons mx-auto ie-double-nav ie-hidden-double-nav col-md-10">
+        <li class="nav-item w-100">
+          <input type="text" id="exampleForm2" class="form-control">
+        </li>
+      </ul>
+      <div class="w-auto">
+        <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav w-auto">
+          <li class="nav-item dropdown btn-group" dropdown>
+            <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+              <mdb-icon fas icon="user"></mdb-icon>
+            </a>
+            <div class="dropdown-menu dropdown-primary dropdown-menu-right" role="menu">
+              <a class="dropdown-item" (click)="showLogin()" *ngIf="!loggedIn">Login</a>
+              <a class="dropdown-item" (click)="showRegister()" *ngIf="!loggedIn">Sign Up</a>
+              <a class="dropdown-item" *ngIf="loggedIn" (click)="resetPassword.show()">Reset Password</a>
+              <a class="dropdown-item" (click)="logout()" *ngIf="loggedIn">Logout</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-light" mdbWavesEffect>
+              <span class="badge rounded red z-depth-1">1</span>
+              <mdb-icon fas icon="bell"></mdb-icon>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-light" mdbWavesEffect>
+              <span class="badge rounded red z-depth-1">1</span>
+              <mdb-icon fas icon="shopping-cart"></mdb-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </navlinks>
+  </mdb-navbar>
+  <!--/. Navbar -->
+</header>
+<!--/.Double navigation-->
+
+
+<!--Sign up-->
+<div mdbModal #signup="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Sign up</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="signup.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 md-form">
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+          <input type="text" id="signup-username" [(ngModel)]="username" (change)="userCheck()" class="form-control" mdbInput>
+          <label for="signup-username">User name</label>
+          <mdb-error *ngIf="checkid()">Input invalid</mdb-error>
+          <mdb-error *ngIf="!checkid() && !check">{{username_validation_message}}</mdb-error>
+          <mdb-success *ngIf="!checkid() && check">{{username_validation_message}}</mdb-success>
+        </div>
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="envelope" class="prefix grey-text"></mdb-icon>
+          <input type="email" id="signup-email" [(ngModel)]="email" class="form-control" mdbInput>
+          <label for="signup-email">Your email</label>
+          <mdb-error *ngIf="checkemail()">Input invalid</mdb-error>
+        </div>
+        <div class="md-form mb-4">
+          <mdb-icon fas icon="lock" class="prefix grey-text"></mdb-icon>
+          <input type="password" id="signup-pass" [(ngModel)]="password" class="form-control" mdbInput>
+          <label for="signup-pass">Your password</label>
+          <mdb-error *ngIf="checkpass()">Input invalid</mdb-error>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button mdbBtn color="info" class="waves-light" (click)="register()" [disabled]="!check" mdbWavesEffect>Sign up</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Sign up-->
+
+
+<!--Login-->
+<div mdbModal #login="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Login</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="login.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 md-form">
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+          <input type="text" id="login-username" [(ngModel)]="username" class="form-control" mdbInput>
+          <label for="login-username">User name</label>
+          <mdb-error *ngIf="checkid()">Input invalid</mdb-error>
+        </div>
+        <div class="md-form mb-4">
+          <mdb-icon fas icon="lock" class="prefix grey-text"></mdb-icon>
+          <input type="password" id="login-pass" [(ngModel)]="password" class="form-control" mdbInput>
+          <label for="login-pass">Your password</label>
+          <mdb-error *ngIf="checkpass()">Input invalid</mdb-error>
+        </div>
+        <div class="md-form mb-4">
+          <div class="row">
+            <div class="col">
+              <mdb-checkbox [(ngModel)]="rememberme">Remember me</mdb-checkbox>
+            </div>
+            <div class="col">
+              <!-- <div class="my-3" (click)="login.hide();forgotPassword.show()"><a><strong>Forgot Password</strong></a></div> -->
+              <button type="button" class="btn btn-default btn-sm mt-2" (click)="login.hide();forgotPassword.show()">Forgot Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button mdbBtn color="info" class="waves-light" mdbWavesEffect (click)="userlogin()">Login<mdb-icon fas icon="sign-in-alt"
+            class="ml-1"></mdb-icon></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Login-->
+
+<!--Forgor Password-->
+<div mdbModal #forgotPassword="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Forgot Password</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="forgotPassword.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 md-form">
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+          <input type="text" id="signup-username" [(ngModel)]="username" (change)="userCheck()" class="form-control" mdbInput>
+          <label for="signup-username">User name</label>
+          <mdb-error *ngIf="checkid()">Input invalid</mdb-error>
+        </div>
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="envelope" class="prefix grey-text"></mdb-icon>
+          <input type="email" id="signup-email" [(ngModel)]="email" class="form-control" mdbInput>
+          <label for="signup-email">Your email</label>
+          <mdb-error *ngIf="checkemail()">Input invalid</mdb-error>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button mdbBtn color="info" class="waves-light" (click)="forgotPass()" mdbWavesEffect>Submit<mdb-icon fas icon="sign-in-alt"
+            class="ml-1"></mdb-icon></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Forgor Password-->
+
+<!--Reset Password-->
+<div mdbModal #resetPassword="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Reset Password</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="resetPassword.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3 md-form">
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="user" class="prefix grey-text"></mdb-icon>
+          <input type="text" id="signup-username" [(ngModel)]="username" (change)="userCheck()" [disabled]="true" class="form-control" mdbInput>
+          <label for="signup-username">User name</label>
+          <mdb-error *ngIf="checkid()">Input invalid</mdb-error>
+          <mdb-error *ngIf="!checkid() && !check">{{username_validation_message}}</mdb-error>
+          <mdb-success *ngIf="!checkid() && check">{{username_validation_message}}</mdb-success>
+        </div>
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="lock" class="prefix grey-text"></mdb-icon>
+          <input type="password" id="pass" [(ngModel)]="password" class="form-control" mdbInput>
+          <label for="pass">Current password</label>
+          <mdb-error *ngIf="checkpass()">Input invalid</mdb-error>
+        </div>
+        <div class="md-form mb-5">
+          <mdb-icon fas icon="lock" class="prefix grey-text"></mdb-icon>
+          <input type="password" id="pass-new" [(ngModel)]="passwordNew" class="form-control" mdbInput>
+          <label for="pass-new">New password</label>
+          <mdb-error *ngIf="checkpassNew()">Input invalid</mdb-error>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button mdbBtn color="info" class="waves-light" (click)="resetPasswordLoggedIn()" mdbWavesEffect>Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Reset Password-->

@@ -1,0 +1,19 @@
+.view {
+    color: white;
+}
+
+.flex-center {
+    height: 70px;
+    width: 80px;
+}
+
+.navbar {
+    z-index: 1040;
+  }
+  .side-nav {
+    margin-top: 49px !important;
+  }
+  
+  .double-nav .breadcrumb-dn p {
+      color: #fff;
+  }

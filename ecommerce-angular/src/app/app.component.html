@@ -1,0 +1,11 @@
+
+<div class="wrapper">
+  <div [class.blurred]="loadingSpinner">
+      <app-navbar *ngIf="showNavBar"></app-navbar>
+      <router-outlet></router-outlet>
+  </div>
+  <div class="overlay spinner-wrapper" *ngIf="loadingSpinner">
+      <mdb-spinner spinnerType="big" spinnerColor="blue"></mdb-spinner>
+  </div>
+</div>
+    

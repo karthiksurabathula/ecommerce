@@ -1,0 +1,71 @@
+jwt:
+  secret: schoolapplication
+  timeseconds: 300
+
+url:
+  home: /home
+  login: /login
+  resetPassword: /restPassword
+  maintenance: /maintenance
+
+server:
+  port: 8082
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: '%{yyyy-MM-dd HH:mm:ss}t %s %r %q %{User-Agent}i %{Referer}i %a %{X-Forwarded-For}i %b %Tsec' 
+      prefix: access_log
+      suffix: .log
+      file-date-format: .yyyy-MM-dd
+      directory: logs
+    basedir: .
+    #HTTP Thread pool
+    max-threads: 150
+    min-spare-threads: 150
+  compression:
+    enabled: true
+    mime-types:
+    - application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg
+
+spring:
+  datasource:
+    hikari: 
+      connection-timeout: 30000 #ms
+      minimum-idle: 30
+      maximum-pool-size: 180
+      idle-timeout: 60000 #ms
+    url: jdbc:mysql://localhost:3306/ecommerce?allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true&useSSL=false
+    username: springboot
+    password: Password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+  jpa:
+    properties:
+       hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    show-sql: false
+  pid:
+    file: logs//pid.txt
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n'
+  main:
+    banner-mode: log
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+    
+async:
+  coreThreadSize: 30
+  maxPoolSize: 30
+  queueSize: 100
