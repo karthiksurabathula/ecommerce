@@ -18,7 +18,7 @@ export class LoginService {
       password: password,
     };
 
-    return this.http.post<LoginResponse>(this.url + 'login-service/authenticate', user, {
+    return this.http.post<LoginResponse>(this.url + 'login/authenticate', user, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
@@ -31,7 +31,7 @@ export class LoginService {
       role: role
     };
 
-    return this.http.post<LoginResponse>(this.url + 'login-service/register', user, {
+    return this.http.post<LoginResponse>(this.url + 'login/register', user, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
@@ -40,14 +40,14 @@ export class LoginService {
     let params = new HttpParams();
     params = params.append("username", username);
 
-    return this.http.post<any>(this.url + 'login-service/check', {}, {
+    return this.http.post<any>(this.url + 'login/check', {}, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'), params,
     });
   }
 
   public logout(bearer: string) {
     return this.http.post<LoginResponse>(
-      this.url + "login-service/api/logout",
+      this.url + "login/api/logout",
       {},
       {
         headers: new HttpHeaders().set("Authorization", bearer),
@@ -65,7 +65,7 @@ export class LoginService {
       password: password
     };
 
-    return this.http.post<LoginResponse>(this.url + "login-service/api/reset", resetReq, {
+    return this.http.post<LoginResponse>(this.url + "login/api/reset", resetReq, {
       headers: new HttpHeaders()
         .set("Content-Type", "application/json")
         .set("Authorization", bearer),
@@ -77,7 +77,7 @@ export class LoginService {
       username: username,
       email: email
     };
-    return this.http.post<LoginResponse>(this.url + 'login-service/reset', user, {
+    return this.http.post<LoginResponse>(this.url + 'login/reset', user, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }

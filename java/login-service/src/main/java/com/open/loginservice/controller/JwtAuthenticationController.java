@@ -16,40 +16,40 @@ import com.open.loginservice.model.ResetPasswordRequest;
 import com.open.loginservice.service.JwtService;
 
 @RestController
-@RequestMapping("login-service/")
+@RequestMapping("login/")
 public class JwtAuthenticationController {
 
 	@Autowired
 	private JwtService jwtService;
 
-	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	@RequestMapping(value = "authenticate", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> authenticate(@RequestBody JwtRequest authenticationRequest, HttpServletResponse responseMap) {
 		return jwtService.authorize(authenticationRequest, responseMap);
 	}
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public ResponseEntity<?> register(@RequestBody JwtRequest user, HttpServletResponse responseMap) {
 		return jwtService.save(user, responseMap);
 	}
 	
-	@RequestMapping(value = "/check", method = RequestMethod.POST)
+	@RequestMapping(value = "check", method = RequestMethod.POST)
 	public ResponseEntity<?> register(@RequestParam String username) {
 		return jwtService.checkUsername(username);
 	}
 	
-	@RequestMapping(value = "/api/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "api/logout", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPassword() {
 		return jwtService.logout();
 	}
 	
-	@RequestMapping(value = "/api/reset", method = RequestMethod.POST)
+	@RequestMapping(value = "api/reset", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPasswordLoggedIn(@RequestBody ResetPasswordRequest resetReq, HttpServletResponse responseMap) {
 		return jwtService.resetPasswordLoggedIn(resetReq, responseMap);
 	}
 
 	//
-	@RequestMapping(value = "/reset", method = RequestMethod.POST)
+	@RequestMapping(value = "reset", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPassword(@RequestBody JwtRequest resetReq, HttpServletResponse responseMap) {
 		return jwtService.resetPassword(resetReq, responseMap);
 	}

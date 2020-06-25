@@ -54,4 +54,4 @@ configuration:
     root:
       level: info
       appender-ref:
-        ref: ApplicationLogFile-Appender
+        ref: Console-Appender

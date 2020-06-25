@@ -34,6 +34,7 @@ import com.open.loginservice.entity.LoginUser;
 import com.open.loginservice.model.JwtRequest;
 import com.open.loginservice.model.ResetPasswordRequest;
 import com.open.loginservice.model.UserSettingRequest;
+import com.open.loginservice.model.userdetails.UserDetailsResponse;
 import com.open.loginservice.repository.LoginUserRepository;
 import com.open.loginservice.security.CustomUserDetails;
 import com.open.loginservice.security.JwtTokenUtil;
@@ -49,15 +50,11 @@ public class JwtService {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private OutboundService outbound;
 
 	private static final Logger log = LogManager.getLogger(JwtService.class);
 
-//	@Value("${url.home}")
-//	private String home;
-//	@Value("${url.login}")
-//	private String login;
-//	@Value("${url.resetPassword}")
-//	private String restPassword;
 	@Value("${jwt.timeseconds}")
 	private int timeseconds;
 
@@ -68,7 +65,11 @@ public class JwtService {
 			if (user.getUsername().length() > 1) {
 				final LoginUser user1 = loginUser.findByUsername(user.getUsername());
 				if (user1 == null) {
-					createUser(user.getUsername(), user.getPassword(), user.getRole(), false, 0);
+					ResponseEntity<UserDetailsResponse> res = outbound.createUserDetails(user.getUsername(),
+							user.getEmail());
+					if (res.getStatusCode().value() == 200) {
+						createUser(user.getUsername(), user.getPassword(), user.getRole(), false, 0);
+					}
 					response.put("indicator", "success");
 					response.put("message", "User created successfully");
 					return new ResponseEntity<>(response, HttpStatus.OK);
@@ -100,20 +101,34 @@ public class JwtService {
 		HashMap<String, Object> response = new HashMap<>();
 		String message = null;
 		try {
-			final LoginUser user1 = loginUser.findByUsername(passwordReq.getUsername());
-			if (user1 != null) {
-				user1.setPassword(bcryptEncoder.encode("1234"));
-				user1.setFailurecount(0);
-				user1.setResetPassword(false);
-				loginUser.saveAndFlush(user1);
-				response.put("indicator", "success");
-				response.put("message", "If user exists password will be sent to Mail registered");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+			ResponseEntity<UserDetailsResponse> res = outbound.getUserDetails(passwordReq.getUsername());
+			if (res.getStatusCode().value() == 200) {
+				if (res.getBody().getUserDetails().getEmail().equals(passwordReq.getEmail())) {
+					final LoginUser user1 = loginUser.findByUsername(passwordReq.getUsername());
+					if (user1 != null) {
+						user1.setPassword(bcryptEncoder.encode("1234"));
+						user1.setFailurecount(0);
+						user1.setResetPassword(false);
+						loginUser.saveAndFlush(user1);
+						response.put("indicator", "success");
+						response.put("message", "If user exists password will be sent to Mail registered");
+						return new ResponseEntity<>(response, HttpStatus.OK);
+					} else {
+						response.put("indicator", "success");
+						response.put("message", "If user exists password will be sent to Mail registered");
+						log.warn("Userid not found in Login Users table" + passwordReq.getUsername());
+						return new ResponseEntity<>(response, HttpStatus.OK);
+					}
+				} else {
+					response.put("indicator", "success");
+					response.put("message", "If user exists password will be sent to Mail registered");
+					log.warn("Email did not match with User Id: " + passwordReq.getUsername());
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				}
 			} else {
 				response.put("indicator", "fail");
-				response.put("message", "Error Occured, if issue persists please contact administrator");
-				log.info("Token Not Found");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+				response.put("message", "User not found");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			log.error("", e);
@@ -143,7 +158,7 @@ public class JwtService {
 					return new ResponseEntity<>(response, HttpStatus.OK);
 				} else {
 					response.put("indicator", "fail");
-					response.put("message", "Passwords did not match");
+					response.put("message", "Incorrect credentials");
 					return new ResponseEntity<>(response, HttpStatus.OK);
 				}
 			} else {
@@ -185,6 +200,7 @@ public class JwtService {
 				user.setFailurecount(0);
 				user.setRestetTokenCreatedDate(new Date());
 				loginUser.saveAndFlush(user);
+				response.put("message", "User logined successfully");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				token = jwtTokenUtil.generateToken(userDetails);
@@ -196,9 +212,9 @@ public class JwtService {
 				user.setToken(token);
 				user.setTokenCreatedDate(new Date());
 				loginUser.saveAndFlush(user);
+				response.put("message", "User logined successfully");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			}
-
 		} catch (AccountExpiredException e) {
 			log.error("", e);
 			response.put("indicator", "fail");
@@ -277,7 +293,6 @@ public class JwtService {
 			loginUser.saveAndFlush(user1);
 			response.put("indicator", "success");
 			response.put("message", "Logout successfully");
-//			response.put("redirecturl", home);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("", e);
@@ -344,7 +359,6 @@ public class JwtService {
 			} else {
 				response.put("status", 401);
 				response.put("message", "Unauthorized");
-//				response.put("redirecturl", login);
 				return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 			}
 
@@ -386,7 +400,6 @@ public class JwtService {
 			} else {
 				response.put("status", 401);
 				response.put("message", "Unauthorized");
-//				response.put("redirecturl", login);
 				return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 			}
 
@@ -425,7 +438,6 @@ public class JwtService {
 		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 	}
 
-	// Check if user is authenticated for other apps to continue.
 	public ResponseEntity<?> getUser(String username) {
 		HashMap<String, Object> response = new HashMap<>();
 		String message = null;

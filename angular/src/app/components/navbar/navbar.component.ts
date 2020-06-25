@@ -138,7 +138,9 @@ export class NavbarComponent implements OnInit {
   register() {
     this.globalService.showLoadingSpinner();
     this.signup.hide();
-    if (this.check === false && this.username.length > 0) {
+    console.log(this.check + ' check');
+    console.log(this.username.length + ' lemgth');
+    if (this.check === true && this.username.length > 0) {
       this.loginService.register(this.username, this.password, this.email, 'user').subscribe(
         (result) => {
           this.signup.hide();

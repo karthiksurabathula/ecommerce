@@ -70,3 +70,8 @@ async:
   coreThreadSize: 30
   maxPoolSize: 30
   queueSize: 100
+
+userService:
+  url: http://localhost:8083/
+  connectionTimeout: 10000
+  readTimeout: 15000
