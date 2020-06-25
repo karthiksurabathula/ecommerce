@@ -1,0 +1,57 @@
+configuration:
+  name: Default
+  properties:
+    property:
+    - name: log-path
+      value: logs
+    - name: archive
+      value: ${log-path}/archive
+  appenders:
+    Console:
+      PatternLayout:
+        pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n'
+      name: Console-Appender
+      target: System.out
+     
+    RollingFile:
+      DefaultRolloverStrategy:
+        max: '30'
+      PatternLayout:
+        pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n'
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 1MB
+      fileName: ${log-path}/application.log
+      filePattern: ${archive}/application.log.%d{yyyy-MM-dd-hh-mm}.gz
+      name: ApplicationLogFile-Appender
+#Level info/debug/trace/all/warn/off
+# set to off for disbalig loggin on requestresopnse logging 
+  loggers:
+    #Log everything in hibernate
+    logger:
+      additivity: 'false'
+      level: debug
+      name: org.hibernate
+      appender-ref:
+        - level: off
+          ref: ApplicationLogFile-Appender
+    #Log SQL statements
+    logger:
+      additivity: 'false'
+      level: debug
+      name: org.hibernate.SQL
+      appender-ref:
+        - level: debug
+          ref: ApplicationLogFile-Appender
+#    #Log JDBC bind parameters
+    logger:
+      additivity: 'false'
+      level: debug
+      name: org.hibernate.type.descriptor.sql
+      appender-ref:
+        - level: trace
+          ref: ApplicationLogFile-Appender
+    root:
+      level: info
+      appender-ref:
+        ref: Console-Appender

@@ -65,7 +65,7 @@ public class JwtService {
 		HashMap<String, Object> response = new HashMap<>();
 		String message = null;
 		try {
-			if(user.getUsername().length()>1) {
+			if (user.getUsername().length() > 1) {
 				final LoginUser user1 = loginUser.findByUsername(user.getUsername());
 				if (user1 == null) {
 					createUser(user.getUsername(), user.getPassword(), user.getRole(), false, 0);
@@ -76,14 +76,14 @@ public class JwtService {
 					response.put("indicator", "success");
 					response.put("message", "User already exists");
 					return new ResponseEntity<>(response, HttpStatus.OK);
-				}	
+				}
 			} else {
 				response.put("indicator", "fail");
 				response.put("message", "Username cannot be empty");
 				log.info("Token Not Found");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			}
-			
+
 		} catch (Exception e) {
 			log.error("", e);
 			response.put("indicator", "fail");
@@ -134,7 +134,7 @@ public class JwtService {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			final LoginUser user1 = loginUser.findByUsername(auth.getName());
 			if (user1 != null) {
-				if(bcryptEncoder.matches(passwordReq.getCurrentPassword(), user1.getPassword())) {
+				if (bcryptEncoder.matches(passwordReq.getCurrentPassword(), user1.getPassword())) {
 					user1.setPassword(bcryptEncoder.encode(passwordReq.getPassword()));
 					user1.setResetPassword(false);
 					loginUser.saveAndFlush(user1);
@@ -402,12 +402,6 @@ public class JwtService {
 		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 	}
 
-	// Check if user is authenticated for other apps to continue.
-	public Authentication checkUserAuthentication() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return auth;
-	}
-
 	public ResponseEntity<?> checkUsername(String username) {
 		HashMap<String, Object> response = new HashMap<>();
 		String message = null;
@@ -418,6 +412,27 @@ public class JwtService {
 			else
 				response.put("check", false);
 			response.put("indicator", "success");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("", e);
+			response.put("indicator", "fail");
+			message = "Error Occured, if issue persists please contact administrator";
+		}
+
+		if (message != null)
+			response.put("message", message);
+
+		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+	}
+
+	// Check if user is authenticated for other apps to continue.
+	public ResponseEntity<?> getUser(String username) {
+		HashMap<String, Object> response = new HashMap<>();
+		String message = null;
+		try {
+			LoginUser user = loginUser.findByUsername(username);
+			response.put("indicator", "success");
+			response.put("user", user);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("", e);

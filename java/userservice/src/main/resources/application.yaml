@@ -1,15 +1,8 @@
 jwt:
   secret: schoolapplication
-  timeseconds: 300
-
-url:
-  home: /home
-  login: /login
-  resetPassword: /restPassword
-  maintenance: /maintenance
 
 server:
-  port: 8082
+  port: 8083
   tomcat:
     accesslog:
       enabled: true
@@ -70,3 +63,8 @@ async:
   coreThreadSize: 30
   maxPoolSize: 30
   queueSize: 100
+
+auth:
+  url: http://localhost:8082/user
+  connectionTimeout: 10000
+  readTimeout: 15000

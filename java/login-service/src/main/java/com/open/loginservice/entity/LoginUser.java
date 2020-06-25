@@ -30,7 +30,6 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class LoginUser {
 
-	@JsonIgnore
 	@Id
 	@NotNull
 	private String username;
@@ -38,39 +37,36 @@ public class LoginUser {
 	@JsonIgnore
 	private String password;
 	@NotNull
-	@JsonIgnore
 	private boolean accountNonExpired;
 	@NotNull
-	@JsonIgnore
 	private boolean accountNonLocked;
 	@NotNull
-	@JsonIgnore
 	private boolean credentialsNonExpired;
-	@JsonIgnore
 	@NotNull
 	private boolean enabled;
-	@JsonIgnore
 	@NotNull
 	private Date createdDate;
-	@JsonIgnore
 	@NotNull
 	private Date modifiedDate;
-	@JsonIgnore
 	@Lob
 	private String token;
-	@JsonIgnore
 	private Date tokenCreatedDate;
 	private String role;
 
+	@JsonIgnore
 	@NotNull
 	private boolean resetPassword;
+	@JsonIgnore
 	private String restetToken;
+	@JsonIgnore
 	private Date restetTokenCreatedDate;
-		
+	@JsonIgnore	
 	@Column(nullable=false)
 	private int failurecount;
+	@JsonIgnore
 	@Column(nullable=true)
 	private Date lastLoginFailureTime;
+	@JsonIgnore
 	@Column(nullable=true)
 	private String lastLoginFailureIpAddress;
 
